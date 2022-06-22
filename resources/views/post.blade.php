@@ -5,7 +5,8 @@
     <div class="row mt-2">
         <div class="col-xl-8 mx-auto border border-dark p-3">
             <h1 class="mb-0">{{ $post->title }}</h1>
-            <small><i>By: {{ $post->user->name }}</i></small>
+            <small><i>By: {{ $post->user->name }}
+                <br>On: {{ $post->created_at->format('D, M Y: H:i:s') }}</i></small>
             <p class="mt-3">{{ $post->text }}</p>
         </div>
     </div>

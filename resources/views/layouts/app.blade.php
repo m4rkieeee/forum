@@ -20,6 +20,17 @@
     <link rel="stylesheet" href="{{ asset('pnotify/pnotify.custom.css') }}"/>
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        body{
+            font-size: 16px;
+            line-height: 1.5;
+
+            font-family: “Helvetica Neue”, Helvetica, Arial, sans-serif;
+        }
+        div{
+            max-width: 100%;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
