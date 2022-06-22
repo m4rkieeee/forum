@@ -4,7 +4,7 @@
 
     <div class="row mt-2">
         <div class="col-xl-8 mx-auto border border-dark p-3">
-            <h1 class="mb-0">{{ $post->title }}</h1>
+            <h1 class="mb-0"><i class="fa-regular fa-file fa-lg"></i> {{ $post->title }} @if(Auth()->id() == $post->user_id) <button class="btn p-0 float-end" id="{{ $post->id }}" name="deletePost"><i class="fa-solid fa-trash-can" style="color:red;"></i></button> @endif</h1>
             <small><i>By: {{ $post->user->name }}
                 <br>On: {{ $post->created_at->format('D, M Y: H:i:s') }}</i></small>
             <p class="mt-3">{{ $post->text }}</p>
@@ -13,20 +13,19 @@
 
     <div class="row mt-2">
         <div class="col-xl-8 mx-auto border border-dark p-3">
-            <h3>Comments</h3>
+            <h3><i class="fa-regular fa-comment fa-lg"></i> Comments</h3>
             <hr>
             @if($comments->isEmpty())
                 <div id="postComments">
-                    No comments have been posted yet!
+                    <span id="noComments">No comments have been posted yet!</span>
                 </div>
             @else
                 <div id="postComments">
                     @foreach($comments as $comment)
-                        <div class="col-xl-12 border border-dark p-3 mb-3">
+                        <div class="col-xl-12 border border-dark p-3 mb-3" id="{{ $comment->id }}">
                             <p class="float-end"><small>{{ $comment->created_at->diffForHumans() }}</small></p>
-                            <p class="mb-1"><b>By</b> {{ $post->user->name }}</p>
+                            <p class="mb-1"><b>By</b> {{ $post->user->name }} @if(Auth()->id() == $comment->user_id) <button class="btn p-0" id="{{ $comment->id }}" name="deleteComment"><i class="fa-solid fa-trash-can" style="color:red;"></i></button> @endif</p>
                             <p class="mb-0">{{ $comment->reply }}</p>
-
                         </div>
                     @endforeach
                 </div>
@@ -55,7 +54,7 @@
                     },
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     success: function (data) {
-                        if (data == 'success') {
+                        if (data) {
                             new PNotify({
                                 title: "Success!",
                                 text: 'Comment Added',
@@ -63,14 +62,18 @@
                                 delay: 7000
                             });
 
+                            if($('#noComments').length){
+                                $('#noComments').remove();
+                            }
+
                             $('#postComments').append(
-                                '<div class="col-xl-12 border border-dark p-3 mb-3">\
+                                '<div class="col-xl-12 border border-dark p-3 mb-3" id="' + data + '">\
                                     <p class="float-end"><small>0 seconds ago</small></p>\
-                                    <p class="mb-1"><b>By</b> {{ Auth()->user()->name ?? 'guest'}}</p>\
+                                    <p class="mb-1"><b>By</b> {{ Auth()->user()->name ?? 'guest'}} <button class="btn p-0" id="' + data + '" name="deleteComment"><i class="fa-solid fa-trash-can" style="color:red;"></i></button></p>\
                                     <p class="mb-0">' + $('#comment').val() + '</p>\
                                 </div>');
 
-                            $('#postComment').val('');
+                            $('#comment').val('');
                         }
                     },
                     error: function (data) {
@@ -78,6 +81,78 @@
                         new PNotify({
                             title: "Error!",
                             text: 'Comment failed',
+                            type: 'error',
+                            delay: 7000
+                        });
+                    }
+                });
+            });
+
+            $(document).on("click", "button[name=deleteComment]", function (e) {
+                var id = $(this).attr('id');
+                console.log(id);
+                $.ajax({
+                    url: "{{ route('post.actions') }}",
+                    type: 'POST',
+                    data: {
+                        type: 'deleteComment',
+                        commentId: id,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success: function (data) {
+                        if (data == 'success') {
+                            new PNotify({
+                                title: "Success!",
+                                text: 'Comment Deleted',
+                                type: 'success',
+                                delay: 7000
+                            });
+
+                            $('div#' + id).remove();
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data);
+                        new PNotify({
+                            title: "Error!",
+                            text: 'Comment deletion failed',
+                            type: 'error',
+                            delay: 7000
+                        });
+                    }
+                });
+            });
+
+            $(document).on("click", "button[name=deletePost]", function (e) {
+                var id = $(this).attr('id');
+                console.log(id);
+                $.ajax({
+                    url: "{{ route('post.actions') }}",
+                    type: 'POST',
+                    data: {
+                        type: 'deletePost',
+                        postId: id,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success: function (data) {
+                        if (data == 'success') {
+                            new PNotify({
+                                title: "Success!",
+                                text: 'Post Deleted',
+                                type: 'success',
+                                delay: 7000
+                            });
+
+                            setTimeout(function(){
+                                window.location.href = "{{ route('home')}}";
+                            }, 3000);
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data);
+                        new PNotify({
+                            title: "Error!",
+                            text: 'Comment deletion failed',
                             type: 'error',
                             delay: 7000
                         });

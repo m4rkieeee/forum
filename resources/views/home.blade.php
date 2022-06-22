@@ -5,7 +5,7 @@
     @if(Auth()->check())
         <div class="row mt-2">
             <div class="col-xl-8 mx-auto">
-                <button type="button" class="btn btn-primary float-end" style="margin-right:-10px" data-bs-toggle="modal" data-bs-target="#addPostModal">Add Post</button>
+                <button type="button" class="btn btn-primary" style="margin-left:-10px;line-height:1;" data-bs-toggle="modal" data-bs-target="#addPostModal"><i class="fa-solid fa-plus"></i> New Post</button>
             </div>
         </div>
     @endif
@@ -13,8 +13,9 @@
         @foreach ($posts as $post)
 
                 <div class="row mt-2">
-                    <div class="col-xl-8 mx-auto border border-dark p-3">
-                        <a href="{{ route('post.view', ['id' => $post->id]) }}">{{ $post->title }}</a>
+                    <div class="col-xl-8 mx-auto border border-dark p-3 pb-0">
+                        <p style="margin-bottom:-2px;"><i class="fa-regular fa-file fa-lg me-1"></i><a href="{{ route('post.view', ['id' => $post->id]) }}">{{ $post->title }}</a> <small class="float-end">Comments: <b>{{ $post->comments_count }}</b></small></p>
+                        <p><small>By <b>{{ $post->user->name ?? '' }}</b> » {{ $post->created_at->format('d M Y, H:i') }}</small> <small class="float-end right-0">Views: <b>{{ $post->visits_count }}</b></small></p>
                     </div>
                 </div>
         @endforeach
@@ -73,8 +74,9 @@
 
                             $('#postRows').append(
                                 ' <div class="row mt-2">\
-                                    <div class="col-xl-8 mx-auto border border-dark p-3">\
-                                        <a href="/post/' + data + '">' + $('#postTitle').val() + '</a>\
+                                    <div class="col-xl-8 mx-auto border border-dark p-3 pb-0">\
+                                         <p style="margin-bottom:-2px;"><i class="fa-regular fa-file fa-lg me-1"></i><a href="/post/' + data + '">' + $('#postTitle').val() + '</a> <small class="float-end">Comments: <b>0</b></small></p>\
+                                         <p><small>By <b>{{ Auth()->user()->name ?? 'Guest' }}</b> » ' + moment().format('D MMM YYYY, h:mm') +'</small> <small class="float-end right-0">Views: <b>{{ $post->visits_count }}</b></small></p>\
                                     </div>\
                                 </div');
 

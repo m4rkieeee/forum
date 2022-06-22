@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\PostVisit;
 use App\Models\Reply;
 use Illuminate\Http\Request;
 
@@ -15,8 +16,15 @@ class PostController extends Controller
      */
     public function index($id)
     {
-        $post = Post::with('user')->where('id', $id)->first();
+        $post = Post::with('user')->where('id', $id)->firstOrFail();
         $comments = Reply::where('post_id', $id)->get();
+
+        $visit = new PostVisit();
+        $visit->user_id = Auth()->id() ?? 0;
+        $visit->post_id = $id;
+        $visit->ip = request()->ip();
+        $visit->save();
+
         $resources = [
             'post' => $post,
             'comments' => $comments
@@ -112,7 +120,28 @@ class PostController extends Controller
             $comment->reply = $request->comment;
             $comment->save();
 
-            return 'success';
+            return $comment->id;
+        }
+
+        if ($request->type == 'deleteComment'){
+            $comment = Reply::where('id', $request->commentId)->first();
+            if ($comment->user_id == Auth()->id()){
+                Reply::where('id', $request->commentId)->delete();
+                return 'success';
+            } else {
+                return 'noAccess';
+            }
+        }
+
+        if ($request->type == 'deletePost'){
+            $post = Post::where('id', $request->postId)->first();
+            if ($post->user_id == Auth()->id()){
+                Reply::where('post_id', $request->postId)->delete();
+                Post::where('id', $request->postId)->delete();
+                return 'success';
+            } else {
+                return 'noAccess';
+            }
         }
     }
 }
