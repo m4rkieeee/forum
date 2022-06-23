@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="row mt-2">
-        <div class="col-xl-8 mx-auto border border-dark p-3">
+        <div class="col-xl-8 mx-auto border border-dark p-3 rounded">
             <h1 class="mb-0"><i class="fa-regular fa-file fa-lg"></i> {{ $post->title }} @if(Auth()->id() == $post->user_id) <button class="btn p-0 float-end" id="{{ $post->id }}" name="deletePost"><i class="fa-solid fa-trash-can" style="color:red;"></i></button> @endif</h1>
             <small><i>By: {{ $post->user->name }}
                 <br>On: {{ $post->created_at->format('D, M Y: H:i:s') }}</i></small>
@@ -12,7 +12,7 @@
     </div>
 
     <div class="row mt-2">
-        <div class="col-xl-8 mx-auto border border-dark p-3">
+        <div class="col-xl-8 mx-auto border border-dark p-3 rounded">
             <h3><i class="fa-regular fa-comment fa-lg"></i> Comments</h3>
             <hr>
             @if($comments->isEmpty())
@@ -22,7 +22,7 @@
             @else
                 <div id="postComments">
                     @foreach($comments as $comment)
-                        <div class="col-xl-12 border border-dark p-3 mb-3" id="{{ $comment->id }}">
+                        <div class="col-xl-12 border border-dark p-3 mb-3 rounded" id="{{ $comment->id }}">
                             <p class="float-end"><small>{{ $comment->created_at->diffForHumans() }}</small></p>
                             <p class="mb-1"><b>By</b> {{ $post->user->name }} @if(Auth()->id() == $comment->user_id) <button class="btn p-0" id="{{ $comment->id }}" name="deleteComment"><i class="fa-solid fa-trash-can" style="color:red;"></i></button> @endif</p>
                             <p class="mb-0">{{ $comment->reply }}</p>

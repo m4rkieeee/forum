@@ -13,7 +13,7 @@
         @foreach ($posts as $post)
 
                 <div class="row mt-2">
-                    <div class="col-xl-8 mx-auto border border-dark p-3 pb-0">
+                    <div class="col-xl-8 mx-auto border border-dark p-3 pb-0 rounded">
                         <p style="margin-bottom:-2px;"><i class="fa-regular fa-file fa-lg me-1"></i><a href="{{ route('post.view', ['id' => $post->id]) }}">{{ $post->title }}</a> <small class="float-end">Comments: <b>{{ $post->comments_count }}</b></small></p>
                         <p><small>By <b>{{ $post->user->name ?? '' }}</b> » {{ $post->created_at->format('d M Y, H:i') }}</small> <small class="float-end right-0">Views: <b>{{ $post->visits_count }}</b></small></p>
                     </div>
