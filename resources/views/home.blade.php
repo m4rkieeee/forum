@@ -73,8 +73,8 @@
                             });
 
                             $('#postRows').append(
-                                ' <div class="row mt-2">\
-                                    <div class="col-xl-8 mx-auto border border-dark p-3 pb-0">\
+                                ' <div class="row mt-2 rounded">\
+                                    <div class="col-xl-8 mx-auto border border-dark p-3 pb-0 rounded">\
                                          <p style="margin-bottom:-2px;"><i class="fa-regular fa-file fa-lg me-1"></i><a href="/post/' + data + '">' + $('#postTitle').val() + '</a> <small class="float-end">Comments: <b>0</b></small></p>\
                                          <p><small>By <b>{{ Auth()->user()->name ?? 'Guest' }}</b> » ' + moment().format('D MMM YYYY, H:mm') +'</small> <small class="float-end right-0">Views: <b>0</b></small></p>\
                                     </div>\
